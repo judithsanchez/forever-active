@@ -1,3 +1,32 @@
+/* 
+The following code creates and populates three tables: workouts, keywords, and workout_keyword.
+
+Table: workouts
+Columns:
+- id: Primary key auto-incremented integer representing the workout ID.
+- title: Title of the workout.
+- url: URL of the workout video.
+- embedID: ID used for embedding the workout video.
+- minutes: Duration of the workout in minutes.
+- calories: Approximate calories burned during the workout.
+- iscomplete: Flag indicating whether the workout is completed (0 for not complete, 1 for complete).
+
+Table: keywords
+Columns:
+- id: Primary key auto-incremented integer representing the keyword ID.
+- text: The keyword text.
+
+Table: workout_keyword
+Columns:
+- id: Primary key auto-incremented integer representing the relationship ID between workouts and keywords.
+- WorkoutID: Foreign key referencing the workout ID in the workouts table.
+- KeywordID: Foreign key referencing the keyword ID in the keywords table.
+
+The code inserts data into the workouts and keywords tables. It then creates relationships between workouts and keywords using the workout_keyword table.
+
+Note: The code assumes that the tables do not exist and drops them if they already exist to ensure a fresh start.
+*/
+
 DROP TABLE IF EXISTS workout_keyword;
 DROP TABLE IF EXISTS workouts;
 DROP TABLE IF EXISTS keywords;
