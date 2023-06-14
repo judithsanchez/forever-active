@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 // React Router
-import { Routes, Route, Link, NavLink } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 // Providers
 import AuthProvider, { useAuth } from './components/auth';
@@ -33,30 +33,7 @@ function App() {
     <>
       <AuthProvider>
         <Menu />
-        {/* <Navbar expand="lg" className="bg-white">
-          <div className="container">
-            <Navbar.Brand as={Link} to="/">
-              <img className="logo img-fluid" src={logo} alt="logo" />
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse>
-              <Nav className="ms-auto">
-                {routes.map((route) => {
-                  return (
-                    <li key={route.to}>
-                      <NavLink
-                        className="link text-bold mx-2 fs-5"
-                        to={route.to}
-                      >
-                        {route.text}
-                      </NavLink>
-                    </li>
-                  );
-                })}
-              </Nav>
-            </Navbar.Collapse>
-          </div>
-        </Navbar> */}
+
         <Routes>
           <Route
             path="/"

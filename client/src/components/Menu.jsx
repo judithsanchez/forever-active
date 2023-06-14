@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { useAuth } from './auth';
 
 // React Router
-import { Routes, Route, Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // Styles and Assets
 import { Navbar, Nav, Container, Row } from 'react-bootstrap';
@@ -24,11 +24,12 @@ export default function LoginPage() {
         <Navbar.Collapse>
           <Nav className="ms-auto">
             {routes.map((route) => {
+              if (route.private && !auth.user) return null;
               return (
                 <li key={route.to}>
-                  <NavLink className="link text-bold mx-2 fs-5" to={route.to}>
+                  <Link className="link text-bold mx-2 fs-5" to={route.to}>
                     {route.text}
-                  </NavLink>
+                  </Link>
                 </li>
               );
             })}
