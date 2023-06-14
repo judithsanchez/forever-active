@@ -24,6 +24,7 @@ export default function LoginPage() {
         <Navbar.Collapse>
           <Nav className="ms-auto">
             {routes.map((route) => {
+              if (route.publicOnly && auth.user) return null;
               if (route.private && !auth.user) return null;
               return (
                 <li key={route.to}>

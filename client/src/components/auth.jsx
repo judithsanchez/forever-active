@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+// React Router
+import { useNavigate, Navigate } from 'react-router-dom';
 
 const AuthContext = React.createContext();
 
@@ -8,7 +10,7 @@ function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
 
-  const login = (userName) => {
+  const login = ({ userName }) => {
     setUser({ userName });
     navigate('/profile');
   };
@@ -28,5 +30,15 @@ function useAuth() {
   return auth;
 }
 
+function AuthRoute(props) {
+  const auth = useAuth();
+
+  if (!auth.user) {
+    return <Navigate to="/login" />;
+  }
+
+  return props.children;
+}
+
 export default AuthProvider;
-export { useAuth };
+export { useAuth, AuthRoute };

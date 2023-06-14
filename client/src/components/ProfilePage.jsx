@@ -1,4 +1,7 @@
+// React
 import React from 'react';
+
+// Providers
 import { useAuth } from './auth';
 
 export default function ProfilePage() {

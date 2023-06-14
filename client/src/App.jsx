@@ -1,16 +1,14 @@
 // React
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 // React Router
 import { Routes, Route } from 'react-router-dom';
 
 // Providers
-import AuthProvider, { useAuth } from './components/auth';
+import AuthProvider, { AuthRoute } from './components/auth';
 
 // Styles and Assets
 import './App.css';
-import logo from './assets/logo.png';
-import { Navbar, Nav, Container, Row } from 'react-bootstrap';
 import 'google-fonts';
 
 // Components
@@ -49,10 +47,34 @@ function App() {
             path="/workouts"
             element={<ListWorkouts workouts={results} setWorkouts={results} />}
           />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route
+            path="/admin"
+            element={
+              <AuthRoute>
+                <Admin />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <AuthRoute>
+                <ProfilePage />
+              </AuthRoute>
+            }
+          />
+
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/logout" element={<LogoutPage />} />
+
+          <Route
+            path="/logout"
+            element={
+              <AuthRoute>
+                <LogoutPage />
+              </AuthRoute>
+            }
+          />
+          <Route path="*" element={<p>Not found</p>} />
         </Routes>
       </AuthProvider>
 
@@ -63,33 +85,5 @@ function App() {
     </>
   );
 }
-
-// const routes = [];
-// routes.push({
-//   to: '/workouts',
-//   text: 'Workouts',
-//   private: false,
-// });
-// routes.push({
-//   to: '/profile',
-//   text: 'Profile',
-//   private: true,
-// });
-// routes.push({
-//   to: '/login',
-//   text: 'Login',
-//   private: false,
-//   publicOnly: true,
-// });
-// routes.push({
-//   to: '/logout',
-//   text: 'Logout',
-//   private: true,
-// });
-// routes.push({
-//   to: '/admin',
-//   text: 'Admin',
-//   private: true,
-// });
 
 export default App;

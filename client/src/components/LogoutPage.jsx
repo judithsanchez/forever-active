@@ -6,7 +6,6 @@ export default function LogoutPage() {
 
   const logout = (e) => {
     auth.logout();
-    alert('Logged out');
   };
   return (
     <>
