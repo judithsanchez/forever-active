@@ -3,6 +3,8 @@ import React, { createContext, useContext, useState } from 'react';
 // React Router
 import { useNavigate, Navigate } from 'react-router-dom';
 
+const adminList = ['yuyi', 'irene'];
+
 const AuthContext = React.createContext();
 
 function AuthProvider({ children }) {
@@ -10,8 +12,9 @@ function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
 
-  const login = ({ userName }) => {
-    setUser({ userName });
+  const login = ({ username }) => {
+    const isAdmin = adminList.includes(username);
+    setUser({ username, isAdmin });
     navigate('/profile');
   };
 
