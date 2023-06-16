@@ -23,6 +23,7 @@ import LoginPage from './components/LoginPage';
 import LogoutPage from './components/LogoutPage';
 import Homepage from './components/Homepage';
 import SearchResults from './components/SearchResults';
+import SignupPage from './components/SignupPage';
 
 function App() {
   const [results, setResults] = useState([]);
@@ -65,6 +66,7 @@ function App() {
           />
 
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
 
           <Route
             path="/logout"

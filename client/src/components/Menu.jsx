@@ -60,13 +60,19 @@ routes.push({
   publicOnly: true,
 });
 routes.push({
-  to: '/logout',
-  text: 'Logout',
-  private: true,
+  to: '/signup',
+  text: 'Sign-up',
+  private: false,
+  publicOnly: true,
 });
 routes.push({
   to: '/admin',
   text: 'Admin',
   private: true,
   restricted: true,
+});
+routes.push({
+  to: '/logout',
+  text: 'Logout',
+  private: true,
 });
