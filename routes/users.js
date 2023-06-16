@@ -134,3 +134,80 @@ router.patch('/:id/password', async function (req, res, next) {
     res.status(500).send(error);
   }
 });
+
+router.patch('/:id/addfavoriteworkouts', async function (req, res, next) {
+  try {
+    const userId = req.params.id;
+    const { favoriteWorkouts } = req.body;
+
+    // Check if the user exists
+    const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
+    if (userExists.data.length === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    // Fetch the current favoriteworkouts array
+    const existingUser = userExists.data[0];
+    const currentFavoriteWorkouts = JSON.parse(existingUser.favoriteWorkouts);
+
+    // Merge the existing and new favoriteWorkouts arrays
+    const updatedFavoriteWorkouts = [
+      ...currentFavoriteWorkouts,
+      ...favoriteWorkouts,
+    ];
+
+    // Convert the updated favoriteWorkouts array to a stringified JSON
+    const updatedFavoriteWorkoutsString = JSON.stringify(
+      updatedFavoriteWorkouts
+    );
+
+    // Update the favorite workouts of the user
+    await db(
+      `UPDATE users SET favoriteWorkouts = '${updatedFavoriteWorkoutsString}' WHERE id = ${userId};`
+    );
+
+    // Fetch the updated user
+    const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
+    res.send(updatedUser.data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+router.patch('/:id/removefavoriteWorkouts', async function (req, res, next) {
+  try {
+    const userId = req.params.id;
+    const { favoriteWorkouts } = req.body;
+
+    // Check if the user exists
+    const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
+    if (userExists.data.length === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    // Fetch the current favoriteWorkouts array
+    const existingUser = userExists.data[0];
+    const currentFavoriteWorkouts = JSON.parse(existingUser.favoriteWorkouts);
+
+    // Remove the workout ID from the favoriteWorkouts array
+    const updatedFavoriteWorkouts = currentFavoriteWorkouts.filter(
+      (workoutId) => !favoriteWorkouts.includes(workoutId)
+    );
+
+    // Convert the updated favoriteWorkouts array to a stringified JSON
+    const updatedFavoriteWorkoutsString = JSON.stringify(
+      updatedFavoriteWorkouts
+    );
+
+    // Update the favorite workouts of the user
+    await db(
+      `UPDATE users SET favoriteWorkouts = '${updatedFavoriteWorkoutsString}' WHERE id = ${userId};`
+    );
+
+    // Fetch the updated user
+    const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
+    res.send(updatedUser.data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
