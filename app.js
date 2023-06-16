@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index'); // Router for the root path
 var workoutsRouter = require('./routes/workouts'); // Router for the "/workouts" path
 var searchRouter = require('./routes/search'); // Router for the "/search" path
 var keyRouter = require('./routes/keywords'); // Router for the "/keywords" path
+var usersRouter = require('./routes/users'); // Router for the "/users" path
 
 var app = express(); // Creating an instance of the Express application
 
@@ -25,5 +26,6 @@ app.use('/api', indexRouter); // Using the indexRouter for the "/api" path
 app.use('/api/workouts', workoutsRouter); // Using the workoutsRouter for the "/api/workouts" path
 app.use('/api/search', searchRouter); // Using the searchRouter for the "/api/search" path
 app.use('/api/keywords', keyRouter); // Using the keyRouter for the "/api/keywords" path
+app.use('/api/users', usersRouter); // Using the usersRouter for the "/api/users" path
 
 module.exports = app; // Exporting the app module

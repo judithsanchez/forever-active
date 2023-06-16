@@ -5,10 +5,11 @@ import { Navigate } from 'react-router-dom';
 export default function LoginPage() {
   const auth = useAuth();
   const [username, setUserName] = useState('');
+  const [password, setPassword] = useState('');
 
   const login = (e) => {
     e.preventDefault();
-    auth.login(username);
+    auth.login(username, password);
   };
 
   if (auth.user) {
@@ -21,6 +22,8 @@ export default function LoginPage() {
       <form onSubmit={login}>
         <label>Username</label>
         <input value={username} onChange={(e) => setUserName(e.target.value)} />
+        <label>Password</label>
+        <input value={password} onChange={(e) => setPassword(e.target.value)} />
         <button type="submit">Login</button>
       </form>
     </>
