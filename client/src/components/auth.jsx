@@ -12,18 +12,6 @@ function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [data, setData] = useState(null);
 
-  // const signup = (username, password) => {
-  //   if (users.some((existingUser) => existingUser.username === username)) {
-  //     console.log('The user is already registered');
-  //     navigate('/login');
-  //     return;
-  //   }
-
-  //   users.push({ username: username, isAdmin: false, password: password });
-  //   console.log(users);
-  //   navigate('/login');
-  // };
-
   const signup = async (username, password) => {
     try {
       const { data } = await axios.post(
