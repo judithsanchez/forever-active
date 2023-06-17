@@ -4,29 +4,6 @@ import axios from 'axios';
 // React Router
 import { useNavigate, Navigate } from 'react-router-dom';
 
-// const users = [
-//   {
-//     username: 'yuyi',
-//     isAdmin: true,
-//     password: '123',
-//     favoriteWorkouts: [
-//       'https://youtu.be/vHWvMTIGJEQ',
-//       'https://youtu.be/cmRz6Q8DOrA',
-//     ],
-//   },
-//   { username: 'irene', isAdmin: true, password: '123', favoriteWorkouts: [] },
-//   { username: 'steph', isAdmin: false, password: '123', favoriteWorkouts: [] },
-//   {
-//     username: 'sofia',
-//     isAdmin: false,
-//     password: '123',
-//     favoriteWorkouts: [
-//       'https://youtu.be/qw32DPzSEHo',
-//       'https://youtu.be/ZvQ-5ad-6Qo',
-//     ],
-//   },
-// ];
-
 const AuthContext = React.createContext();
 
 function AuthProvider({ children }) {
@@ -35,16 +12,30 @@ function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [data, setData] = useState(null);
 
-  const signup = (username, password) => {
-    if (users.some((existingUser) => existingUser.username === username)) {
-      console.log('The user is already registered');
-      navigate('/login');
-      return;
-    }
+  // const signup = (username, password) => {
+  //   if (users.some((existingUser) => existingUser.username === username)) {
+  //     console.log('The user is already registered');
+  //     navigate('/login');
+  //     return;
+  //   }
 
-    users.push({ username: username, isAdmin: false, password: password });
-    console.log(users);
-    navigate('/login');
+  //   users.push({ username: username, isAdmin: false, password: password });
+  //   console.log(users);
+  //   navigate('/login');
+  // };
+
+  const signup = async (username, password) => {
+    try {
+      const { data } = await axios.post(
+        'api/users/signup',
+        { username: username, password: password },
+        { method: 'POST' }
+      );
+      navigate('/login');
+    } catch (error) {
+      console.log(error);
+      setData(error.message);
+    }
   };
 
   const login = async (username, password) => {
