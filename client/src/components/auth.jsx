@@ -12,62 +12,62 @@ function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [data, setData] = useState(null);
   const [statusCode, setStatusCode] = useState(null);
+  const [signupResponse, setSignupResponse] = useState({
+    status: null,
+    message: null,
+  });
+  const [loginResponse, setLoginResponse] = useState({
+    status: null,
+    message: null,
+    isUsernameCorrect: null,
+    isPasswordCorrect: null,
+  });
 
   const signup = async (username, password) => {
     try {
-      const { data } = await axios.post(
+      const response = await axios.post(
         'api/users/signup',
         { username: username, password: password },
         { method: 'POST' }
       );
-      setStatusCode(200);
+      setSignupResponse({
+        status: response.data.status,
+        message: response.data.message,
+      });
       navigate('/login');
       alert('Your registration was successful.');
     } catch (error) {
-      setStatusCode(error.response.status);
+      setSignupResponse({
+        status: error.response.status,
+        message: error.response.data.message,
+      });
     }
   };
 
   const login = async (username, password) => {
     try {
-      const { data } = await axios.post(
-        '/api/users/login',
-        {
-          username: username,
-          password: password,
-        },
-        {
-          method: 'POST',
-        }
-      );
+      const response = await axios.post('/api/users/login', {
+        username: username,
+        password: password,
+      });
 
-      //store it locally
-      localStorage.setItem('token', data.token);
-      console.log(data.message, data.token);
-
+      // Store the token locally
+      localStorage.setItem('token', response.data.token);
+      console.log(response.data.message, response.data.token);
       const requestedData = await requestData();
       setUser(requestedData); // Update the user state
+      setLoginResponse({
+        status: response.data.status,
+        message: response.data.message,
+      });
+      navigate('/profile');
     } catch (error) {
-      console.log(error);
-      setData(error.message);
-      setStatusCode(error.response.status);
-    }
-    navigate('/profile');
-  };
-
-  const resetPassword = async (username, newPassword) => {
-    console.log(username, newPassword);
-    try {
-      const { data } = await axios.patch(
-        'api/users/reset-password',
-        { username: username, password: newPassword },
-        { method: 'PATCH' }
-      );
-      setStatusCode(null);
-      alert('Password change succesful');
-      // setStatusCode(response.status);
-    } catch (error) {
-      setStatusCode(error.response.status);
+      setLoginResponse({
+        status: error.response.status,
+        message: error.response.data.message,
+        isUsernameCorrect: error.response.data.isCorrectUsername,
+        isPasswordCorrect: error.response.data.isCorrectPassword,
+      });
     }
   };
 
@@ -88,13 +88,64 @@ function AuthProvider({ children }) {
     }
   };
 
+  // const login = async (username, password) => {
+  //   try {
+  //     const { data } = await axios.post(
+  //       '/api/users/login',
+  //       {
+  //         username: username,
+  //         password: password,
+  //       },
+  //       {
+  //         method: 'POST',
+  //       }
+  //     );
+
+  //     //store it locally
+  //     localStorage.setItem('token', data.token);
+  //     console.log(data.message, data.token);
+  //     const requestedData = await requestData();
+  //     setUser(requestedData); // Update the user state
+  //   } catch (error) {
+  //     console.log(error);
+  //     setData(error.message);
+  //     setStatusCode(error.response.status);
+  //   }
+  //   navigate('/profile');
+  // };
+
+  const resetPassword = async (username, newPassword) => {
+    console.log(username, newPassword);
+    try {
+      const { data } = await axios.patch(
+        'api/users/reset-password',
+        { username: username, password: newPassword },
+        { method: 'PATCH' }
+      );
+      setStatusCode(null);
+      alert('Password change succesful');
+      // setStatusCode(response.status);
+    } catch (error) {
+      setStatusCode(error.response.status);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     setData(null);
     navigate('/');
   };
 
-  const auth = { user, statusCode, login, logout, signup, resetPassword };
+  const auth = {
+    user,
+    statusCode,
+    login,
+    loginResponse,
+    logout,
+    signup,
+    signupResponse,
+    resetPassword,
+  };
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }

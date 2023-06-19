@@ -29,9 +29,10 @@ export default function SignUp() {
           type="password"
         />
         <button type="submit">Sign Up</button>
-        {auth.statusCode && (
+        {auth.signupResponse && auth.signupResponse.status === 400 && (
           <p>
-            Oops! It seems that username is already taken. Try a different one!
+            Oops! It seems that the username is already taken. Try a different
+            one!
           </p>
         )}
       </form>

@@ -11,12 +11,22 @@ const supersecret = process.env.SUPER_SECRET;
 
 // Get requests
 // See all users
-router.get('/', async function (req, res, next) {
+router.get('/', async function (_, res) {
   try {
     const result = await db('SELECT * FROM users;');
-    res.send(result.data);
+    const response = {
+      data: result.data,
+      message: 'Success',
+      status: 200,
+    };
+    res.status(200).send(response);
   } catch (error) {
-    res.status(500).send(error);
+    const response = {
+      error: error.message,
+      message: 'Internal Server Error',
+      status: 500,
+    };
+    res.status(500).send(response);
   }
 });
 
@@ -34,9 +44,17 @@ router.post('/signup', async (req, res) => {
     await db(
       `INSERT INTO users (username, password, isAdmin, favoriteWorkouts) VALUES ("${username}" , "${hash}", 0, '${favoriteWorkoutsJSON}')`
     );
-    res.status(200).send({ message: 'Registration successful' });
-  } catch (err) {
-    res.status(400).send({ message: err.message });
+    const response = {
+      message: 'Registration successful',
+      status: 200,
+    };
+    res.status(200).send(response);
+  } catch (error) {
+    const response = {
+      message: 'The username is taken',
+      status: 400,
+    };
+    res.status(400).send(response);
   }
 });
 
@@ -44,28 +62,70 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
+  let isCorrectPassword;
+  let isCorrectUsername;
 
   try {
-    const results = await db(
+    const response = await db(
       `SELECT * FROM users WHERE username = "${username}"`
     );
-    const user = results.data[0];
+    const user = response.data[0];
     if (user) {
       const user_id = user.id;
 
       const correctPassword = await bcrypt.compare(password, user.password);
 
+      isCorrectPassword = correctPassword;
+
       if (!correctPassword) throw new Error('Incorrect password');
 
       var token = jwt.sign({ user_id }, supersecret);
-      res.send({ message: 'Login successful, here is your token', token });
+
+      const response = {
+        message: 'Login successful, here is your token',
+        status: 200,
+        token,
+      };
+      res.status(200).send(response);
     } else {
+      isCorrectUsername = false;
       throw new Error('User does not exist');
     }
-  } catch (err) {
-    res.status(400).send({ message: err.message });
+  } catch (error) {
+    const response = {
+      message: 'Wrong credentials',
+      status: 400,
+      isCorrectUsername,
+      isCorrectPassword,
+    };
+    res.status(400).send(response);
   }
 });
+
+// router.post('/login', async (req, res) => {
+//   const { username, password } = req.body;
+
+//   try {
+//     const results = await db(
+//       `SELECT * FROM users WHERE username = "${username}"`
+//     );
+//     const user = results.data[0];
+//     if (user) {
+//       const user_id = user.id;
+
+//       const correctPassword = await bcrypt.compare(password, user.password);
+
+//       if (!correctPassword) throw new Error('Incorrect password');
+
+//       var token = jwt.sign({ user_id }, supersecret);
+//       res.send({ message: 'Login successful, here is your token', token });
+//     } else {
+//       throw new Error('User does not exist');
+//     }
+//   } catch (err) {
+//     res.status(400).send({ message: err.message });
+//   }
+// });
 
 // The middleware call this function next
 
