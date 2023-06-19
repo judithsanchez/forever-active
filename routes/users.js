@@ -29,14 +29,13 @@ router.post('/signup', async (req, res) => {
 
   try {
     const hash = await bcrypt.hash(password, saltRounds);
-
     const favoriteWorkoutsJSON = JSON.stringify([]);
 
     await db(
       `INSERT INTO users (username, password, isAdmin, favoriteWorkouts) VALUES ("${username}" , "${hash}", 0, '${favoriteWorkoutsJSON}')`
     );
 
-    res.send({ message: 'Register successful' });
+    res.send({ message: 'Registration successful' });
   } catch (err) {
     res.status(400).send({ message: err.message });
   }

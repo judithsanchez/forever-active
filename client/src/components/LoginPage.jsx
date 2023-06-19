@@ -23,7 +23,11 @@ export default function LoginPage() {
         <label>Username</label>
         <input value={username} onChange={(e) => setUserName(e.target.value)} />
         <label>Password</label>
-        <input value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+        />
         <button type="submit">Login</button>
       </form>
     </>

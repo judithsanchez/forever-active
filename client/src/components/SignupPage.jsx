@@ -23,8 +23,17 @@ export default function SignUp() {
         <label>Username</label>
         <input value={username} onChange={(e) => setUserName(e.target.value)} />
         <label>Password</label>
-        <input value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+        />
         <button type="submit">Sign Up</button>
+        {auth.errors && (
+          <p>
+            Oops! It seems that username is already taken. Try a different one!
+          </p>
+        )}
       </form>
     </>
   );

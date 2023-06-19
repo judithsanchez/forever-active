@@ -11,6 +11,7 @@ function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
   const [data, setData] = useState(null);
+  const [errors, setErrors] = useState(null);
 
   const signup = async (username, password) => {
     try {
@@ -19,10 +20,12 @@ function AuthProvider({ children }) {
         { username: username, password: password },
         { method: 'POST' }
       );
+      setErrors(null);
       navigate('/login');
+      alert('Your registration was successful.');
     } catch (error) {
-      console.log(error);
-      setData(error.message);
+      console.log('auth signup', error.message);
+      setErrors(error.response.status);
     }
   };
 
@@ -63,7 +66,7 @@ function AuthProvider({ children }) {
       setData(data);
       return data;
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       setData(error.message);
       return null; // Return null or handle the error appropriately
     }
@@ -75,7 +78,7 @@ function AuthProvider({ children }) {
     navigate('/');
   };
 
-  const auth = { user, login, logout, signup };
+  const auth = { user, errors, login, logout, signup };
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }
