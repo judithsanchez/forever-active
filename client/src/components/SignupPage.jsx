@@ -29,7 +29,7 @@ export default function SignUp() {
           type="password"
         />
         <button type="submit">Sign Up</button>
-        {auth.errors && (
+        {auth.statusCode && (
           <p>
             Oops! It seems that username is already taken. Try a different one!
           </p>

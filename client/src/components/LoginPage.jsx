@@ -6,10 +6,17 @@ export default function LoginPage() {
   const auth = useAuth();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [isPasswordForgotten, setIsPasswordForgotten] = useState(null);
+  const [newPassword, setNewPassword] = useState('');
 
   const login = (e) => {
     e.preventDefault();
     auth.login(username, password);
+  };
+
+  const resetPassword = (e) => {
+    e.preventDefault();
+    auth.resetPassword(username, newPassword);
   };
 
   if (auth.user) {
@@ -29,6 +36,19 @@ export default function LoginPage() {
           type="password"
         />
         <button type="submit">Login</button>
+        <a>Forgot your password?</a>
+      </form>
+
+      <form onSubmit={resetPassword}>
+        <label>Username</label>
+        <input value={username} onChange={(e) => setUserName(e.target.value)} />
+        <label>Type New Password</label>
+        <input
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          type="password"
+        />
+        <button type="submit">Reset Password</button>
       </form>
     </>
   );

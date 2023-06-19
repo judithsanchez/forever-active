@@ -11,7 +11,7 @@ function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
   const [data, setData] = useState(null);
-  const [errors, setErrors] = useState(null);
+  const [statusCode, setStatusCode] = useState(null);
 
   const signup = async (username, password) => {
     try {
@@ -20,12 +20,11 @@ function AuthProvider({ children }) {
         { username: username, password: password },
         { method: 'POST' }
       );
-      setErrors(null);
+      setStatusCode(200);
       navigate('/login');
       alert('Your registration was successful.');
     } catch (error) {
-      console.log('auth signup', error.message);
-      setErrors(error.response.status);
+      setStatusCode(error.response.status);
     }
   };
 
@@ -51,8 +50,25 @@ function AuthProvider({ children }) {
     } catch (error) {
       console.log(error);
       setData(error.message);
+      setStatusCode(error.response.status);
     }
     navigate('/profile');
+  };
+
+  const resetPassword = async (username, newPassword) => {
+    console.log(username, newPassword);
+    try {
+      const { data } = await axios.patch(
+        'api/users/reset-password',
+        { username: username, password: newPassword },
+        { method: 'PATCH' }
+      );
+      setStatusCode(null);
+      alert('Password change succesful');
+      // setStatusCode(response.status);
+    } catch (error) {
+      setStatusCode(error.response.status);
+    }
   };
 
   const requestData = async () => {
@@ -78,7 +94,7 @@ function AuthProvider({ children }) {
     navigate('/');
   };
 
-  const auth = { user, errors, login, logout, signup };
+  const auth = { user, statusCode, login, logout, signup, resetPassword };
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }

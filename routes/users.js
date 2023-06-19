@@ -34,8 +34,7 @@ router.post('/signup', async (req, res) => {
     await db(
       `INSERT INTO users (username, password, isAdmin, favoriteWorkouts) VALUES ("${username}" , "${hash}", 0, '${favoriteWorkoutsJSON}')`
     );
-
-    res.send({ message: 'Registration successful' });
+    res.status(200).send({ message: 'Registration successful' });
   } catch (err) {
     res.status(400).send({ message: err.message });
   }
@@ -153,13 +152,14 @@ router.patch('/:id/isadmin', async function (req, res, next) {
 });
 
 // Reset password of a user
-router.patch('/:id/reset-password', async function (req, res, next) {
+router.patch('/reset-password', async function (req, res, next) {
   try {
-    const userId = req.params.id;
-    const { password } = req.body;
+    const { username, password } = req.body;
 
     // Check if the user exists
-    const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
+    const userExists = await db(
+      `SELECT * FROM users WHERE username = '${username}';`
+    );
     if (userExists.data.length === 0) {
       return res.status(404).send('User not found');
     }
@@ -169,16 +169,45 @@ router.patch('/:id/reset-password', async function (req, res, next) {
 
     // Update the password of the user with the hashed password
     await db(
-      `UPDATE users SET password = "${hashedPassword}" WHERE id = ${userId};`
+      `UPDATE users SET password = "${hashedPassword}" WHERE username = '${username}';`
     );
 
     // Fetch the updated user
-    const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
+    const updatedUser = await db(
+      `SELECT * FROM users WHERE username = '${username}';`
+    );
     res.send(updatedUser.data);
   } catch (error) {
     res.status(500).send(error);
   }
 });
+
+// router.patch('/:id/reset-password', async function (req, res, next) {
+//   try {
+//     const userId = req.params.id;
+//     const { password } = req.body;
+
+//     // Check if the user exists
+//     const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
+//     if (userExists.data.length === 0) {
+//       return res.status(404).send('User not found');
+//     }
+
+//     // Hash the new password
+//     const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+//     // Update the password of the user with the hashed password
+//     await db(
+//       `UPDATE users SET password = "${hashedPassword}" WHERE id = ${userId};`
+//     );
+
+//     // Fetch the updated user
+//     const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
+//     res.send(updatedUser.data);
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
 
 router.patch('/:id/addfavoriteworkouts', async function (req, res, next) {
   try {
