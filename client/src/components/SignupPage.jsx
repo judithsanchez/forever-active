@@ -16,16 +16,26 @@ export default function SignUp() {
     return <Navigate to="/profile" />;
   }
 
+  const handleUsernameChange = (e) => {
+    const formattedUsername = e.target.value.trim().toLowerCase();
+    setUserName(formattedUsername);
+  };
+
+  const handlePasswordChange = (e) => {
+    const formattedPassword = e.target.value.replace(/\s/g, '');
+    setPassword(formattedPassword);
+  };
+
   return (
     <>
       <h1>Sign-up!</h1>
       <form onSubmit={signup}>
         <label>Username</label>
-        <input value={username} onChange={(e) => setUserName(e.target.value)} />
+        <input value={username} onChange={handleUsernameChange} />
         <label>Password</label>
         <input
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
           type="password"
         />
         <button type="submit">Sign Up</button>

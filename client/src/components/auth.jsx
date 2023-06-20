@@ -120,22 +120,6 @@ function AuthProvider({ children }) {
     }
   };
 
-  // const resetPassword = async (username, newPassword) => {
-  //   console.log(username, newPassword);
-  //   try {
-  //     const { data } = await axios.patch(
-  //       'api/users/reset-password',
-  //       { username: username, password: newPassword },
-  //       { method: 'PATCH' }
-  //     );
-  //     setStatusCode(null);
-  //     alert('Password change succesful');
-  //     // setStatusCode(response.status);
-  //   } catch (error) {
-  //     setStatusCode(error.response.status);
-  //   }
-  // };
-
   const logout = () => {
     localStorage.removeItem('token');
     setData(null);

@@ -25,9 +25,30 @@ export default function LoginPage() {
     }
   }, [auth.resetPasswordResponse]);
 
+  useEffect(() => {
+    if (auth.loginResponse.isPasswordCorrect === false) {
+      alert(auth.loginResponse.message);
+    }
+  }, [auth.loginResponse]);
+
   if (auth.user) {
     return <Navigate to="/profile" />;
   }
+
+  const handleUsernameChange = (e) => {
+    const formattedUsername = e.target.value.trim().toLowerCase();
+    setUserName(formattedUsername);
+  };
+
+  const handlePasswordChange = (e) => {
+    const formattedPassword = e.target.value.replace(/\s/g, '');
+    setPassword(formattedPassword);
+  };
+
+  const handleNewPasswordChange = (e) => {
+    const formattedNewPassword = e.target.value.replace(/\s/g, '');
+    setNewPassword(formattedNewPassword);
+  };
 
   return (
     <>
@@ -36,14 +57,11 @@ export default function LoginPage() {
           <h1>Login</h1>
           <form onSubmit={login}>
             <label>Username</label>
-            <input
-              value={username}
-              onChange={(e) => setUserName(e.target.value)}
-            />
+            <input value={username} onChange={handleUsernameChange} />
             <label>Password</label>
             <input
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               type="password"
             />
             <button type="submit">Login</button>
@@ -57,14 +75,11 @@ export default function LoginPage() {
         <div>
           <form onSubmit={resetPassword}>
             <label>Username</label>
-            <input
-              value={username}
-              onChange={(e) => setUserName(e.target.value)}
-            />
+            <input value={username} onChange={handleUsernameChange} />
             <label>Type New Password</label>
             <input
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={handleNewPasswordChange}
               type="password"
             />
             <button type="submit">Reset Password</button>
