@@ -255,11 +255,20 @@ router.patch('/remove-favorite-workout', async function (req, res) {
 });
 
 // See all users
+
 router.get('/', async function (_, res) {
   try {
     const result = await db('SELECT * FROM users;');
+
+    const formattedData = result.data.map((user) => {
+      return {
+        ...user,
+        favoriteWorkouts: JSON.parse(user.favoriteWorkouts),
+      };
+    });
+
     const response = {
-      data: result.data,
+      data: formattedData,
       message: 'Success',
       status: 200,
     };
@@ -273,6 +282,26 @@ router.get('/', async function (_, res) {
     res.status(500).send(response);
   }
 });
+
+// router.get('/', async function (_, res) {
+//   try {
+//     const result = await db('SELECT * FROM users;');
+//     const response = {
+//       data: result.data,
+//       favoriteWorkouts: result.favoriteWorkouts,
+//       message: 'Success',
+//       status: 200,
+//     };
+//     res.status(200).send(response);
+//   } catch (error) {
+//     const response = {
+//       error: error.message,
+//       message: 'Internal Server Error',
+//       status: 500,
+//     };
+//     res.status(500).send(response);
+//   }
+// });
 
 // // Update username
 // router.patch('/:id/username', async function (req, res, next) {
