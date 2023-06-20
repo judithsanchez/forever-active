@@ -244,7 +244,6 @@ router.patch('/remove-favorite-workout', async function (req, res) {
     const response = {
       id: updatedUser.data[0].id,
       favoriteWorkouts: JSON.parse(updatedUser.data[0].favoriteWorkouts),
-
       // favoriteWorkouts: updatedUser.data[0].favoriteWorkouts,
       message: 'Workout removed successfuly',
       status: 200,
