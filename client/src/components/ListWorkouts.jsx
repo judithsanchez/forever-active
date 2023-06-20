@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pagination } from './Pagination';
+
+// Providers
 import { useAuth } from './auth';
 
 export default function ListWorkouts() {
