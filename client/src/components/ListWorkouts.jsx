@@ -87,23 +87,27 @@ export default function ListWorkouts() {
                         </a>
                       </p>
                     </div>
+
                     {auth.user && (
-                      <button
-                        type="button"
-                        className="btn btn-primary btn-sm"
-                        onClick={() => addToFavorites(workout.id)}
-                      >
-                        Favorite
-                      </button>
-                    )}
-                    {auth.user && (
-                      <button
-                        type="button"
-                        className="btn btn-primary btn-sm"
-                        onClick={() => removeFromFavorites(workout.id)}
-                      >
-                        Remove
-                      </button>
+                      <div>
+                        {auth.user.favoriteWorkouts.includes(workout.id) ? (
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            onClick={() => removeFromFavorites(workout.id)}
+                          >
+                            Remove
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            onClick={() => addToFavorites(workout.id)}
+                          >
+                            Favorite
+                          </button>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>

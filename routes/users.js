@@ -85,16 +85,15 @@ router.get('/profile', userShouldBeLoggedIn, async (req, res) => {
   const user = result.data[0];
 
   res.send({
-    // message: 'Here is the PROTECTED data for user ' + req.user_id,
     id: user.id,
     username: user.username,
     isAdmin: user.isAdmin,
-    favoriteWorkouts: user.favoriteWorkouts,
+    favoriteWorkouts: JSON.parse(user.favoriteWorkouts),
   });
 });
 
 // Reset password
-router.patch('/reset-password', async function (req, res, next) {
+router.patch('/reset-password', async function (req, res) {
   try {
     const { username, password } = req.body;
 
@@ -255,44 +254,6 @@ router.patch('/remove-favorite-workout', async function (req, res) {
   }
 });
 
-// router.patch('/:id/removefavoriteWorkouts', async function (req, res, next) {
-//   try {
-//     const userId = req.params.id;
-//     const { favoriteWorkouts } = req.body;
-
-//     // Check if the user exists
-//     const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
-//     if (userExists.data.length === 0) {
-//       return res.status(404).send('User not found');
-//     }
-
-//     // Fetch the current favoriteWorkouts array
-//     const existingUser = userExists.data[0];
-//     const currentFavoriteWorkouts = JSON.parse(existingUser.favoriteWorkouts);
-
-//     // Remove the workout ID from the favoriteWorkouts array
-//     const updatedFavoriteWorkouts = currentFavoriteWorkouts.filter(
-//       (workoutId) => !favoriteWorkouts.includes(workoutId)
-//     );
-
-//     // Convert the updated favoriteWorkouts array to a stringified JSON
-//     const updatedFavoriteWorkoutsString = JSON.stringify(
-//       updatedFavoriteWorkouts
-//     );
-
-//     // Update the favorite workouts of the user
-//     await db(
-//       `UPDATE users SET favoriteWorkouts = '${updatedFavoriteWorkoutsString}' WHERE id = ${userId};`
-//     );
-
-//     // Fetch the updated user
-//     const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
-//     res.send(updatedUser.data);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// });
-
 // See all users
 router.get('/', async function (_, res) {
   try {
@@ -312,33 +273,6 @@ router.get('/', async function (_, res) {
     res.status(500).send(response);
   }
 });
-
-// router.patch('/:id/reset-password', async function (req, res, next) {
-//   try {
-//     const userId = req.params.id;
-//     const { password } = req.body;
-
-//     // Check if the user exists
-//     const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
-//     if (userExists.data.length === 0) {
-//       return res.status(404).send('User not found');
-//     }
-
-//     // Hash the new password
-//     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-//     // Update the password of the user with the hashed password
-//     await db(
-//       `UPDATE users SET password = "${hashedPassword}" WHERE id = ${userId};`
-//     );
-
-//     // Fetch the updated user
-//     const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
-//     res.send(updatedUser.data);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// });
 
 // // Update username
 // router.patch('/:id/username', async function (req, res, next) {
