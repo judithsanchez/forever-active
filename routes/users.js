@@ -189,10 +189,13 @@ router.patch('/add-favorite-workout', async function (req, res) {
     );
 
     // Fetch the updated user
+    // favoriteWorkouts: JSON.parse(result.data[0].favoriteWorkouts),
     const updatedUser = await db(`SELECT * FROM users WHERE id = ${id};`);
+
     const response = {
       id: updatedUser.data[0].id,
-      favoriteWorkouts: updatedUser.data[0].favoriteWorkouts,
+      favoriteWorkouts: JSON.parse(updatedUser.data[0].favoriteWorkouts),
+      // favoriteWorkouts: updatedUser.data[0].favoriteWorkouts,
       message: 'Workout added successfuly',
       status: 200,
     };
@@ -240,7 +243,9 @@ router.patch('/remove-favorite-workout', async function (req, res) {
     // res.send(updatedUser.data);
     const response = {
       id: updatedUser.data[0].id,
-      favoriteWorkouts: updatedUser.data[0].favoriteWorkouts,
+      favoriteWorkouts: JSON.parse(updatedUser.data[0].favoriteWorkouts),
+
+      // favoriteWorkouts: updatedUser.data[0].favoriteWorkouts,
       message: 'Workout removed successfuly',
       status: 200,
     };
