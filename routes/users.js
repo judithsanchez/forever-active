@@ -9,31 +9,7 @@ const saltRounds = 10;
 
 const supersecret = process.env.SUPER_SECRET;
 
-// Get requests
-// See all users
-router.get('/', async function (_, res) {
-  try {
-    const result = await db('SELECT * FROM users;');
-    const response = {
-      data: result.data,
-      message: 'Success',
-      status: 200,
-    };
-    res.status(200).send(response);
-  } catch (error) {
-    const response = {
-      error: error.message,
-      message: 'Internal Server Error',
-      status: 500,
-    };
-    res.status(500).send(response);
-  }
-});
-
-// POST requests
-
 // Signup
-
 router.post('/signup', async (req, res) => {
   const { username, password } = req.body;
 
@@ -102,31 +78,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// router.post('/login', async (req, res) => {
-//   const { username, password } = req.body;
-
-//   try {
-//     const results = await db(
-//       `SELECT * FROM users WHERE username = "${username}"`
-//     );
-//     const user = results.data[0];
-//     if (user) {
-//       const user_id = user.id;
-
-//       const correctPassword = await bcrypt.compare(password, user.password);
-
-//       if (!correctPassword) throw new Error('Incorrect password');
-
-//       var token = jwt.sign({ user_id }, supersecret);
-//       res.send({ message: 'Login successful, here is your token', token });
-//     } else {
-//       throw new Error('User does not exist');
-//     }
-//   } catch (err) {
-//     res.status(400).send({ message: err.message });
-//   }
-// });
-
 // The middleware call this function next
 
 router.get('/profile', userShouldBeLoggedIn, async (req, res) => {
@@ -140,6 +91,50 @@ router.get('/profile', userShouldBeLoggedIn, async (req, res) => {
     isAdmin: user.isAdmin,
     favoriteWorkouts: user.favoriteWorkouts,
   });
+});
+
+// Reset password
+router.patch('/reset-password', async function (req, res, next) {
+  try {
+    const { username, password } = req.body;
+
+    // Check if the user exists
+    const userExists = await db(
+      `SELECT * FROM users WHERE username = '${username}';`
+    );
+    if (userExists.data.length === 0) {
+      const response = {
+        status: 404,
+        message: 'User not found',
+      };
+      return res.status(404).send(response);
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Update the password of the user with the hashed password
+    await db(
+      `UPDATE users SET password = "${hashedPassword}" WHERE username = '${username}';`
+    );
+
+    // Fetch the updated user
+    const updatedUser = await db(
+      `SELECT * FROM users WHERE username = '${username}';`
+    );
+    const response = {
+      data: updatedUser,
+      message: 'Password reset successful',
+      status: 200,
+    };
+    res.status(200).send(response);
+  } catch (error) {
+    const response = {
+      message: "Can't reset the password",
+      status: 400,
+    };
+    res.status(400).send(response);
+  }
 });
 
 // DELETE user by ID
@@ -163,111 +158,6 @@ router.delete('/:id', async function (req, res, next) {
     res.status(500).send(error);
   }
 });
-
-// PATCH
-// Update username of a user
-router.patch('/:id/username', async function (req, res, next) {
-  try {
-    const userId = req.params.id;
-    const { username } = req.body;
-
-    // Check if the user exists
-    const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
-    if (userExists.data.length === 0) {
-      return res.status(404).send('User not found');
-    }
-
-    // Update the username of the user
-    await db(`UPDATE users SET username = "${username}" WHERE id = ${userId};`);
-
-    // Fetch the updated user
-    const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
-    res.send(updatedUser.data);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-// Update isAdmin status of a user
-router.patch('/:id/isadmin', async function (req, res, next) {
-  try {
-    const userId = req.params.id;
-    const { isAdmin } = req.body;
-
-    // Check if the user exists
-    const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
-    if (userExists.data.length === 0) {
-      return res.status(404).send('User not found');
-    }
-
-    // Update the isAdmin status of the user
-    await db(`UPDATE users SET isAdmin = ${isAdmin} WHERE id = ${userId};`);
-
-    // Fetch the updated user
-    const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
-    res.send(updatedUser.data);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-// Reset password of a user
-router.patch('/reset-password', async function (req, res, next) {
-  try {
-    const { username, password } = req.body;
-
-    // Check if the user exists
-    const userExists = await db(
-      `SELECT * FROM users WHERE username = '${username}';`
-    );
-    if (userExists.data.length === 0) {
-      return res.status(404).send('User not found');
-    }
-
-    // Hash the new password
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Update the password of the user with the hashed password
-    await db(
-      `UPDATE users SET password = "${hashedPassword}" WHERE username = '${username}';`
-    );
-
-    // Fetch the updated user
-    const updatedUser = await db(
-      `SELECT * FROM users WHERE username = '${username}';`
-    );
-    res.send(updatedUser.data);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-// router.patch('/:id/reset-password', async function (req, res, next) {
-//   try {
-//     const userId = req.params.id;
-//     const { password } = req.body;
-
-//     // Check if the user exists
-//     const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
-//     if (userExists.data.length === 0) {
-//       return res.status(404).send('User not found');
-//     }
-
-//     // Hash the new password
-//     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-//     // Update the password of the user with the hashed password
-//     await db(
-//       `UPDATE users SET password = "${hashedPassword}" WHERE id = ${userId};`
-//     );
-
-//     // Fetch the updated user
-//     const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
-//     res.send(updatedUser.data);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// });
 
 router.patch('/:id/addfavoriteworkouts', async function (req, res, next) {
   try {
@@ -346,7 +236,98 @@ router.patch('/:id/removefavoriteWorkouts', async function (req, res, next) {
   }
 });
 
-module.exports = router;
+// See all users
+router.get('/', async function (_, res) {
+  try {
+    const result = await db('SELECT * FROM users;');
+    const response = {
+      data: result.data,
+      message: 'Success',
+      status: 200,
+    };
+    res.status(200).send(response);
+  } catch (error) {
+    const response = {
+      error: error.message,
+      message: 'Internal Server Error',
+      status: 500,
+    };
+    res.status(500).send(response);
+  }
+});
+
+// router.patch('/:id/reset-password', async function (req, res, next) {
+//   try {
+//     const userId = req.params.id;
+//     const { password } = req.body;
+
+//     // Check if the user exists
+//     const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
+//     if (userExists.data.length === 0) {
+//       return res.status(404).send('User not found');
+//     }
+
+//     // Hash the new password
+//     const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+//     // Update the password of the user with the hashed password
+//     await db(
+//       `UPDATE users SET password = "${hashedPassword}" WHERE id = ${userId};`
+//     );
+
+//     // Fetch the updated user
+//     const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
+//     res.send(updatedUser.data);
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
+
+// // Update username
+// router.patch('/:id/username', async function (req, res, next) {
+//   try {
+//     const userId = req.params.id;
+//     const { username } = req.body;
+
+//     // Check if the user exists
+//     const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
+//     if (userExists.data.length === 0) {
+//       return res.status(404).send('User not found');
+//     }
+
+//     // Update the username of the user
+//     await db(`UPDATE users SET username = "${username}" WHERE id = ${userId};`);
+
+//     // Fetch the updated user
+//     const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
+//     res.send(updatedUser.data);
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
+
+// // Update isAdmin status
+// router.patch('/:id/isadmin', async function (req, res, next) {
+//   try {
+//     const userId = req.params.id;
+//     const { isAdmin } = req.body;
+
+//     // Check if the user exists
+//     const userExists = await db(`SELECT * FROM users WHERE id = ${userId};`);
+//     if (userExists.data.length === 0) {
+//       return res.status(404).send('User not found');
+//     }
+
+//     // Update the isAdmin status of the user
+//     await db(`UPDATE users SET isAdmin = ${isAdmin} WHERE id = ${userId};`);
+
+//     // Fetch the updated user
+//     const updatedUser = await db(`SELECT * FROM users WHERE id = ${userId};`);
+//     res.send(updatedUser.data);
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
 
 // // GET user by ID
 // router.get('/:id', async function (req, res, next) {
@@ -357,3 +338,5 @@ module.exports = router;
 //     res.status(500).send(error);
 //   }
 // });
+
+module.exports = router;

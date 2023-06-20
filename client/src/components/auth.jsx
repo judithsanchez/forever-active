@@ -11,7 +11,6 @@ function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
   const [data, setData] = useState(null);
-  const [statusCode, setStatusCode] = useState(null);
   const [signupResponse, setSignupResponse] = useState({
     status: null,
     message: null,
@@ -21,6 +20,11 @@ function AuthProvider({ children }) {
     message: null,
     isUsernameCorrect: null,
     isPasswordCorrect: null,
+  });
+
+  const [resetPasswordResponse, setResetPasswordResponse] = useState({
+    status: null,
+    message: null,
   });
 
   const signup = async (username, password) => {
@@ -84,67 +88,79 @@ function AuthProvider({ children }) {
     } catch (error) {
       console.log(error.message);
       setData(error.message);
+
       return null; // Return null or handle the error appropriately
     }
   };
 
-  // const login = async (username, password) => {
-  //   try {
-  //     const { data } = await axios.post(
-  //       '/api/users/login',
-  //       {
-  //         username: username,
-  //         password: password,
-  //       },
-  //       {
-  //         method: 'POST',
-  //       }
-  //     );
-
-  //     //store it locally
-  //     localStorage.setItem('token', data.token);
-  //     console.log(data.message, data.token);
-  //     const requestedData = await requestData();
-  //     setUser(requestedData); // Update the user state
-  //   } catch (error) {
-  //     console.log(error);
-  //     setData(error.message);
-  //     setStatusCode(error.response.status);
-  //   }
-  //   navigate('/profile');
-  // };
-
   const resetPassword = async (username, newPassword) => {
     console.log(username, newPassword);
     try {
-      const { data } = await axios.patch(
+      const response = await axios.patch(
         'api/users/reset-password',
         { username: username, password: newPassword },
         { method: 'PATCH' }
       );
-      setStatusCode(null);
+      setResetPasswordResponse({
+        status: response.data.status,
+        message: response.data.message,
+      });
       alert('Password change succesful');
-      // setStatusCode(response.status);
     } catch (error) {
-      setStatusCode(error.response.status);
+      setResetPasswordResponse({
+        status: error.response.status,
+        message: error.response.data.message,
+      });
+      alert('User not found');
+      navigate('/signup');
+      setResetPasswordResponse({
+        status: null,
+        message: null,
+      });
     }
   };
+
+  // const resetPassword = async (username, newPassword) => {
+  //   console.log(username, newPassword);
+  //   try {
+  //     const { data } = await axios.patch(
+  //       'api/users/reset-password',
+  //       { username: username, password: newPassword },
+  //       { method: 'PATCH' }
+  //     );
+  //     setStatusCode(null);
+  //     alert('Password change succesful');
+  //     // setStatusCode(response.status);
+  //   } catch (error) {
+  //     setStatusCode(error.response.status);
+  //   }
+  // };
 
   const logout = () => {
     localStorage.removeItem('token');
     setData(null);
+    setSignupResponse({
+      status: null,
+      message: null,
+    });
+    setSignupResponse({
+      status: null,
+      message: null,
+      isUsernameCorrect: null,
+      isPasswordCorrect: null,
+    });
     navigate('/');
   };
 
   const auth = {
     user,
-    statusCode,
     login,
     loginResponse,
-    logout,
     signup,
     signupResponse,
     resetPassword,
+    resetPasswordResponse,
+    logout,
   };
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
