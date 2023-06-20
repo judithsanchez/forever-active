@@ -27,6 +27,17 @@ function AuthProvider({ children }) {
     message: null,
   });
 
+  const [addFavoriteWorkoutResponse, setAddFavoriteWorkoutResponse] = useState({
+    status: null,
+    message: null,
+  });
+
+  const [removeFavoriteWorkoutResponse, setRemoveFavoriteWorkoutResponse] =
+    useState({
+      status: null,
+      message: null,
+    });
+
   const signup = async (username, password) => {
     try {
       const response = await axios.post(
@@ -82,11 +93,11 @@ function AuthProvider({ children }) {
           authorization: 'Bearer ' + localStorage.getItem('token'),
         },
       });
-      console.log(data);
+      // console.log(data);
       setData(data);
       return data;
     } catch (error) {
-      console.log(error.message);
+      // console.log(error.message);
       setData(error.message);
 
       return null; // Return null or handle the error appropriately
@@ -94,7 +105,7 @@ function AuthProvider({ children }) {
   };
 
   const resetPassword = async (username, newPassword) => {
-    console.log(username, newPassword);
+    // console.log(username, newPassword);
     try {
       const response = await axios.patch(
         'api/users/reset-password',
@@ -116,6 +127,50 @@ function AuthProvider({ children }) {
       setResetPasswordResponse({
         status: null,
         message: null,
+      });
+    }
+  };
+
+  const addFavoriteWorkout = async (id, workout) => {
+    try {
+      const response = await axios.patch('/api/users/add-favorite-workout', {
+        id,
+        favoriteWorkouts: [workout],
+      });
+      setAddFavoriteWorkoutResponse({
+        status: response.status,
+        message: response.data.message,
+      });
+      setUser((prevUser) => ({
+        ...prevUser,
+        favoriteWorkouts: response.data.favoriteWorkouts,
+      }));
+    } catch (error) {
+      setAddFavoriteWorkoutResponse({
+        status: error.status,
+        message: error.message,
+      });
+    }
+  };
+
+  const removeFavoriteWorkout = async (id, workout) => {
+    try {
+      const response = await axios.patch('/api/users/remove-favorite-workout', {
+        id,
+        favoriteWorkouts: [workout],
+      });
+      setRemoveFavoriteWorkoutResponse({
+        status: response.status,
+        message: response.data.message,
+      });
+      setUser((prevUser) => ({
+        ...prevUser,
+        favoriteWorkouts: response.data.favoriteWorkouts,
+      }));
+    } catch (error) {
+      setRemoveFavoriteWorkoutResponse({
+        status: error.response.status,
+        message: error.response.data.message,
       });
     }
   };
@@ -144,6 +199,10 @@ function AuthProvider({ children }) {
     signupResponse,
     resetPassword,
     resetPasswordResponse,
+    addFavoriteWorkout,
+    addFavoriteWorkoutResponse,
+    removeFavoriteWorkout,
+    removeFavoriteWorkoutResponse,
     logout,
   };
 
