@@ -30,6 +30,9 @@ Note: The code assumes that the tables do not exist and drops them if they alrea
 DROP TABLE IF EXISTS workout_keyword;
 DROP TABLE IF EXISTS workouts;
 DROP TABLE IF EXISTS keywords;
+DROP TABLE IF EXISTS users;
+
+
 
 
 CREATE TABLE workouts(id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, title VARCHAR(100), url VARCHAR(255), embedID VARCHAR(100), minutes INT, calories INT, iscomplete TINYINT(1)); 
@@ -44,6 +47,17 @@ FOREIGN KEY (WorkoutID) REFERENCES workouts (id),
 FOREIGN KEY (KeywordID) REFERENCES keywords (id)
 );
 
+CREATE TABLE users (
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  username VARCHAR(255) NOT NULL UNIQUE,
+  isAdmin TINYINT(1) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  favoriteWorkouts TEXT
+);
+
+INSERT INTO users(username, isAdmin, password, favoriteWorkouts) VALUES ("adminuser", true, "123", [1,2,3]);
+
+INSERT INTO users(username, isAdmin, password, favoriteWorkouts) VALUES ("regularuser", false, "123", [1,2,3,4,5,6]);
 
 INSERT INTO workouts(title, url, embedID, minutes, calories, iscomplete) VALUES("High Impact Kickboxing Workout", "https://youtu.be/qGuAQX39y6E", "qGuAQX39y6E", 23, 180, 0);
 INSERT INTO workouts(title, url, embedID, minutes, calories, iscomplete) VALUES("Gentle Yoga Flow", "https://youtu.be/ZvQ-5ad-6Qo", "ZvQ-5ad-6Qo", 20, 100, 0);

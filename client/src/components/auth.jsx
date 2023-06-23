@@ -195,8 +195,8 @@ function AuthProvider({ children }) {
     user,
     login,
     loginResponse,
-    signup,
-    signupResponse,
+    signup, // Function
+    signupResponse, // State
     resetPassword,
     resetPasswordResponse,
     addFavoriteWorkout,
