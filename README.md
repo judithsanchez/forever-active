@@ -91,7 +91,7 @@ SUPER_SECRET=shhhhh
 | Field            | Type         | Null | Key | Default | Extra          |
 | ---------------- | ------------ | ---- | --- | ------- | -------------- |
 | id               | int          | NO   | PRI | NULL    | auto_increment |
-| username         | varchar(255) | NO   |     | NULL    |                |
+| username         | varchar(255) | NO   | UNI | NULL    |                |
 | isAdmin          | tinyint(1)   | NO   |     | NULL    |                |
 | password         | varchar(255) | NO   |     | NULL    |                |
 | favoriteWorkouts | text         | YES  |     | NULL    |                |
@@ -199,11 +199,8 @@ SUPER_SECRET=shhhhh
 
 | id  | username | isAdmin | password                                                     | favoriteWorkouts |
 | --- | -------- | ------- | ------------------------------------------------------------ | ---------------- |
-| 12  | eli      | 0       | $2b$10$5QIGtfAxjn6ilEvK0iMfOOI0kNH6.UwkhxIPBt.dYZtThquYxon.a | [30,1,2]         |
-| 13  | yuyi     | 1       | $2b$10$29ppcacAzqs1qsgepeaV1O5WNk0gylNv8XOWeUhTh1uutLWHxX3Ty | [17,28]          |
-| 14  | irene    | 1       | $2b$10$YyN2M28rRbFmsvqV95qOkuI9Mi/oc6/YdTytHRO2kujCDHIHRbWqO | []               |
-| 15  | laura    | 0       | $2b$10$XovAa0C7ZaHdL71HlELLr.1coj1hXvba3UrJT.QiQPDte6vveVh8C | []               |
-| 16  | brett    | 0       | $2b$10$CXqXU/NsSTR.6S5AsxK/veul85yt0qAxB/gD8XcQvpHbb/bp0vWP. | []               |
+| 1   | eli      | 0       | $2b$10$PuWZjfFNBybZoq11xWDayehtlLDPmHVOHc3tpF7G.SZ/dGQbQc0y2 | [30,1,2]         |
+| 2   | yuyi     | 1       | $2b$10$UERlZ3aNIkD4Pd4TF2Q5z.iiCZ44q76321pJECKxnPs3coTv2v1um | [6,15,8,9,5,4]   |
 
 ### 🗂️ File structure:
 
