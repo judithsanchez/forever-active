@@ -1,6 +1,6 @@
 # Forever Active
 
-[🔗 Live preview](LOOM VIDEO)
+[🎥 Preview](https://www.loom.com/share/50303fc50d1540669966cde0b13a1c86?sid=fc511f2f-7639-4f58-996f-7316c8a48579)
 
 Forever Active is a full stack web app created by [Irene Kulikova](https://www.linkedin.com/in/irene-kulikova-763bb7229/), built using React.js on the frontend, Node.js and Express on the backend, and SQL for the database.
 
